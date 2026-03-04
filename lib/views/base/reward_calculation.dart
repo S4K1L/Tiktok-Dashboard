@@ -37,8 +37,7 @@ class RewardsCard extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _MetricItem(
                   title: "Rewards",
@@ -46,15 +45,21 @@ class RewardsCard extends StatelessWidget {
                   onTap: () =>
                       _edit(context, "Rewards", d.rewards, c.updateRewards),
                 ),
-                Container(height: 24, width: 0.5, color: Colors.white10),
-                const SizedBox(width: 24),
+                Container(
+                  height: 24,
+                  width: 0.5,
+                  color: Colors.white.withOpacity(0.1),
+                ),
                 _MetricItem(
                   title: "RPM",
                   value: d.rpm,
                   onTap: () => _edit(context, "RPM", d.rpm, c.updateRPM),
                 ),
-                Container(height: 24, width: 0.5, color: Colors.white10),
-                const SizedBox(width: 48),
+                Container(
+                  height: 24,
+                  width: 0.5,
+                  color: Colors.white.withOpacity(0.1),
+                ),
                 _MetricItem(
                   title: "Qualified views",
                   value: d.qualifiedViews,
@@ -64,8 +69,8 @@ class RewardsCard extends StatelessWidget {
                     d.qualifiedViews,
                     c.updateQualifiedViews,
                   ),
-                  fontSize: 12,
-                  color: const Color(0xFF707070),
+                  fontSize: 14,
+                  color: Colors.white.withOpacity(0.7),
                 ),
               ],
             ),

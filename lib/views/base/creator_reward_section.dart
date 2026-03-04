@@ -169,6 +169,7 @@ class CreatorRewardsSection extends StatelessWidget {
                   _SummaryRow(
                     label: "Standard Reward",
                     value: "\$${d.standardReward}",
+                    color: const Color(0xFF0075DB),
                     onTap: () => _edit(
                       context,
                       "Standard Reward",
@@ -180,6 +181,7 @@ class CreatorRewardsSection extends StatelessWidget {
                   _SummaryRow(
                     label: "Additional Reward",
                     value: "\$${d.additionalReward}",
+                    color: const Color(0xFF00D1FF),
                     onTap: () => _edit(
                       context,
                       "Additional Reward",
@@ -266,28 +268,39 @@ class _SimpleBarChart extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       final d = controller.data.value;
+      final maxVal = controller.getMaxChartValue();
+
       return Column(
         children: [
           Expanded(
             child: Row(
               children: [
                 // Y Axis Labels
-                const Column(
+                Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "3",
-                      style: TextStyle(color: Colors.white24, fontSize: 10),
+                      maxVal.toStringAsFixed(1),
+                      style: const TextStyle(
+                        color: Colors.white24,
+                        fontSize: 10,
+                      ),
                     ),
                     Text(
-                      "2",
-                      style: TextStyle(color: Colors.white24, fontSize: 10),
+                      (maxVal * 0.66).toStringAsFixed(1),
+                      style: const TextStyle(
+                        color: Colors.white24,
+                        fontSize: 10,
+                      ),
                     ),
                     Text(
-                      "1",
-                      style: TextStyle(color: Colors.white24, fontSize: 10),
+                      (maxVal * 0.33).toStringAsFixed(1),
+                      style: const TextStyle(
+                        color: Colors.white24,
+                        fontSize: 10,
+                      ),
                     ),
-                    Text(
+                    const Text(
                       "0",
                       style: TextStyle(color: Colors.white24, fontSize: 10),
                     ),
@@ -310,95 +323,100 @@ class _SimpleBarChart extends StatelessWidget {
                         }),
                       ),
                       // Bars
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: () {
-                            final isMonthly =
-                                controller.selectedTimeFilter.value != 0;
-                            final barCount = isMonthly ? 12 : 31;
-                            final barWidth = isMonthly ? 20.0 : 4.0;
-                            final chartData = isMonthly
-                                ? d.monthlyChartValues
-                                : d.dailyChartValues;
+                      Positioned.fill(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: () {
+                              final isMonthly =
+                                  controller.selectedTimeFilter.value != 0;
+                              final barCount = isMonthly ? 12 : 31;
+                              final barWidth = isMonthly ? 20.0 : 4.0;
+                              final chartData = isMonthly
+                                  ? d.monthlyChartValues
+                                  : d.dailyChartValues;
 
-                            return List.generate(barCount, (index) {
-                              final val = chartData.length > index
-                                  ? chartData[index]
-                                  : 0.0;
-                              final isTarget = index == 0;
+                              return List.generate(barCount, (index) {
+                                final val = chartData.length > index
+                                    ? chartData[index]
+                                    : 0.0;
+                                final isTarget = isMonthly
+                                    ? (index == 0) // Jan
+                                    : (index == 14); // Feb 15
 
-                              final double barMaxHeight = 120.0;
-                              final double barHeight =
-                                  (val / 3.0) * barMaxHeight;
+                                final double barMaxHeight = 120.0;
+                                final double barHeight =
+                                    (val / maxVal) * barMaxHeight;
 
-                              return GestureDetector(
-                                onTap: () => _edit(
-                                  context,
-                                  isMonthly
-                                      ? "Month ${index + 1} Data"
-                                      : "Day ${index + 1} Data",
-                                  val.toString(),
-                                  (v) => controller.updateChartValue(index, v),
-                                ),
-                                child: Container(
-                                  width: barWidth,
-                                  height: barHeight.clamp(0, barMaxHeight),
-                                  decoration: BoxDecoration(
-                                    color: isTarget
-                                        ? const Color(0xFF4A4A4A)
-                                        : const Color(0xFF2C2C2E),
-                                    borderRadius: const BorderRadius.only(
-                                      topLeft: Radius.circular(2),
-                                      topRight: Radius.circular(2),
+                                return GestureDetector(
+                                  onTap: () => _edit(
+                                    context,
+                                    isMonthly
+                                        ? "Month ${index + 1} Data"
+                                        : "Feb ${index + 1} Data",
+                                    val.toString(),
+                                    (v) =>
+                                        controller.updateChartValue(index, v),
+                                  ),
+                                  child: Container(
+                                    width: barWidth,
+                                    height: barHeight.clamp(
+                                      val > 0 ? 2.0 : 0.0,
+                                      barMaxHeight,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: isTarget
+                                          ? const Color(0xFF4A4A4A)
+                                          : const Color(0xFF2C2C2E),
+                                      borderRadius: const BorderRadius.only(
+                                        topLeft: Radius.circular(2),
+                                        topRight: Radius.circular(2),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              );
-                            });
-                          }(),
+                                );
+                              });
+                            }(),
+                          ),
                         ),
                       ),
                       // Tooltip
                       Positioned(
-                        top: 10,
-                        left: 100,
+                        top: 25,
+                        left: 45,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 8,
-                          ),
+                          padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF2C2C2E).withOpacity(0.95),
-                            borderRadius: BorderRadius.circular(6),
-                            border: Border.all(color: Colors.white10),
+                            color: const Color(0xFF1C1C1E),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.12),
+                            ),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     controller.selectedTimeFilter.value == 0
-                                        ? "Jan 1, ${d.year}"
+                                        ? "Feb 15"
                                         : "Jan ${d.year}",
                                     style: const TextStyle(
-                                      color: Colors.white70,
-                                      fontSize: 11,
+                                      color: Colors.white,
+                                      fontSize: 12,
                                     ),
                                   ),
-                                  const SizedBox(width: 40),
+                                  const SizedBox(width: 50),
                                   Text(
                                     "\$${d.creatorRewardsTotal}",
                                     style: const TextStyle(
                                       color: Colors.white,
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 ],
@@ -410,17 +428,16 @@ class _SimpleBarChart extends StatelessWidget {
                                   height: 1,
                                 ),
                               ),
-                              const SizedBox(height: 6),
                               _TinyRow(
                                 label: "Standard Reward",
                                 value: "\$${d.standardReward}",
-                                color: const Color(0xFF8ECAFF),
+                                color: const Color(0xFF0075DB),
                               ),
-                              const SizedBox(height: 8),
+                              const SizedBox(height: 10),
                               _TinyRow(
                                 label: "Additional Reward",
                                 value: "\$${d.additionalReward}",
-                                color: const Color(0xFF8ECAFF),
+                                color: const Color(0xFF00D1FF),
                               ),
                             ],
                           ),
@@ -432,7 +449,7 @@ class _SimpleBarChart extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 6),
           Padding(
             padding: const EdgeInsets.only(left: 20),
             child: controller.selectedTimeFilter.value == 0
@@ -447,7 +464,14 @@ class _SimpleBarChart extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "5",
+                        "4",
+                        style: TextStyle(
+                          color: Color(0xFF8E8E93),
+                          fontSize: 10,
+                        ),
+                      ),
+                      Text(
+                        "7",
                         style: TextStyle(
                           color: Color(0xFF8E8E93),
                           fontSize: 10,
@@ -461,14 +485,28 @@ class _SimpleBarChart extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "15",
+                        "13",
                         style: TextStyle(
                           color: Color(0xFF8E8E93),
                           fontSize: 10,
                         ),
                       ),
                       Text(
-                        "20",
+                        "16",
+                        style: TextStyle(
+                          color: Color(0xFF8E8E93),
+                          fontSize: 10,
+                        ),
+                      ),
+                      Text(
+                        "19",
+                        style: TextStyle(
+                          color: Color(0xFF8E8E93),
+                          fontSize: 10,
+                        ),
+                      ),
+                      Text(
+                        "22",
                         style: TextStyle(
                           color: Color(0xFF8E8E93),
                           fontSize: 10,
@@ -482,7 +520,7 @@ class _SimpleBarChart extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "31",
+                        "28",
                         style: TextStyle(
                           color: Color(0xFF8E8E93),
                           fontSize: 10,
@@ -547,11 +585,13 @@ class _SimpleBarChart extends StatelessWidget {
 class _SummaryRow extends StatelessWidget {
   final String label;
   final String value;
+  final Color color;
   final VoidCallback onTap;
 
   const _SummaryRow({
     required this.label,
     required this.value,
+    required this.color,
     required this.onTap,
   });
 
@@ -567,10 +607,7 @@ class _SummaryRow extends StatelessWidget {
               Container(
                 width: 7,
                 height: 7,
-                decoration: const BoxDecoration(
-                  color: Color(0xFF8ECAFF),
-                  shape: BoxShape.circle,
-                ),
+                decoration: BoxDecoration(color: color, shape: BoxShape.circle),
               ),
               const SizedBox(width: 8),
               Text(
