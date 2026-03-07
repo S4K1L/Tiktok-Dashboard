@@ -31,9 +31,9 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/language/
     - assets/images/
     - assets/icons/
+    - assets/fonts/
   fonts:
     - family: TikTokSans
       fonts:

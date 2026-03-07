@@ -1,4 +1,4 @@
-import '../data/model/language_model.dart';
+import '../model/language_model.dart';
 
 class AppConstants {
   static const String APP_NAME = 'Tiktok Dashboard';

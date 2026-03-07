@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter_extension/data/model/gender_model.dart';
-import 'package:flutter_extension/data/model/search_query_model.dart';
-import 'package:flutter_extension/data/model/traffic_source_model.dart';
+import 'package:flutter_extension/model/gender_model.dart';
+import 'package:flutter_extension/model/search_query_model.dart';
+import 'package:flutter_extension/model/traffic_source_model.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../data/model/metric_model.dart';
+import '../model/metric_model.dart';
 
 enum AnalyticsRange { d7, d28, d60, d365, custom }
 
