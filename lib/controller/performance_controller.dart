@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:flutter_extension/data/model/performance_model.dart';
+import 'package:flutter_extension/model/performance_model.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';

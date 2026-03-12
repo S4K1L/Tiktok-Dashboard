@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../data/model/language_model.dart';
+import '../model/language_model.dart';
 import '../util/app_constants.dart';
 
 class LocalizationController extends GetxController implements GetxService {

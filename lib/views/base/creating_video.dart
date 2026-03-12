@@ -1,7 +1,7 @@
 import 'dart:io' as io;
 import 'package:flutter/material.dart';
 import 'package:flutter_extension/controller/performance_controller.dart';
-import 'package:flutter_extension/data/model/performance_model.dart';
+import 'package:flutter_extension/model/performance_model.dart';
 import 'package:get/get.dart';
 
 class CreatingVideos extends StatelessWidget {

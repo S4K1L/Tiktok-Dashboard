@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_extension/controller/analytics_controller.dart';
-import 'package:flutter_extension/data/model/metric_model.dart';
+import 'package:flutter_extension/model/metric_model.dart';
 import 'package:get/get.dart';
 
 class MetricCard extends StatelessWidget {
