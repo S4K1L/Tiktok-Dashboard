@@ -1,11 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_extension/controller/home_controller.dart';
 import 'package:flutter_extension/util/app_colors.dart';
+import 'package:flutter_extension/util/app_snackbar.dart';
 import 'package:flutter_extension/views/screen/home/analytics_screen.dart';
 import 'package:flutter_extension/views/screen/home/performance_screen.dart';
 import 'package:get/get.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
+
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  final HomeController homeController = Get.put(HomeController());
+
+  @override
+  void initState() {
+    super.initState();
+    homeController.checkExpired();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,14 +31,22 @@ class DashboardScreen extends StatelessWidget {
           children: [
             _buildButton(
               onTap: () {
-                Get.to(() => AnalyticsScreen());
+                if (homeController.isExpired.value) {
+                  AppSnackbar.subscriptionExpired();
+                } else {
+                  Get.to(() => AnalyticsScreen());
+                }
               },
               title: "Analytics",
             ),
             const SizedBox(height: 20),
             _buildButton(
               onTap: () {
-                Get.to(() => PerformancePage());
+                if (homeController.isExpired.value) {
+                  AppSnackbar.subscriptionExpired();
+                } else {
+                  Get.to(() => PerformancePage());
+                }
               },
               title: "Performance",
             ),
